@@ -480,10 +480,90 @@ public class LambdaExpressions {
           System.out.println("---------------------------------------------------------------"); 
           System.out.println("12. Sort on Multiple Criteria");
           System.out.println("Q1 - Sort by last name; within same last name sort by first name.");
+          record PersonQ121(String firstName, String lastName) {}
+          List<PersonQ121> peopleQ121 = List.of(
+                  new PersonQ121("Charlie", "Smith"),
+                  new PersonQ121("Alice",   "Jones"),
+                  new PersonQ121("Bob",     "Smith"),
+                  new PersonQ121("Dave",    "Jones")
+              );
+          peopleQ121.stream()
+          .sorted(Comparator.comparing(PersonQ121::lastName)
+        		  .thenComparing(PersonQ121::firstName))
+          .forEach(p-> System.out.println(p.lastName + ", "+ p.firstName));
+
+       
+          System.out.println("Q2 - Three-level sort for employees.");
+          record EmployeeQ122(String name, String dept, double salary) {}
+          List<EmployeeQ122> empsQ122 = List.of(
+                  new EmployeeQ122("Priya", "IT", 75000),
+                  new EmployeeQ122("Rahul", "HR", 55000),
+                  new EmployeeQ122("Sneha", "IT", 85000),
+                  new EmployeeQ122("Alice", "HR", 55000),
+                  new EmployeeQ122("Vijay", "IT", 75000)
+              );
+          
+          empsQ122.stream()
+          .sorted(Comparator.comparing(EmployeeQ122::dept)
+        		  .thenComparing(EmployeeQ122::dept)
+        		  //.thenComparing(EmployeeQ122::salary)
+        		  .thenComparing((EmployeeQ122 e) -> -e.salary())
+        		  .thenComparing(EmployeeQ122::name))
+          .forEach(e -> System.out.printf("%-6s | %-7s | %.0f%n",
+                  e.name(), e.dept(), e.salary()));
           
           
-       
-       
+          System.out.println("Q3 -  Build each comparator separately then combine them.");
+          record StudentQ123(String name, String city, int grade) {}
+          List<StudentQ123> studentsQ123 = List.of(
+                  new StudentQ123("Priya", "Mumbai", 85),
+                  new StudentQ123("Ravi",  "Delhi",  90),
+                  new StudentQ123("Sneha", "Mumbai", 92),
+                  new StudentQ123("Arjun", "Delhi",  85)
+              );
+          Comparator<StudentQ123> byCity  = Comparator.comparing(StudentQ123::city);
+          Comparator<StudentQ123> byGrade = Comparator.comparingInt(StudentQ123::grade).reversed();
+          Comparator<StudentQ123> byName  = Comparator.comparing(StudentQ123::name);
+          studentsQ123.stream()
+          .sorted(byCity.thenComparing(byGrade).thenComparing(byName))
+          .forEach(s -> System.out.println(s.city() + " | " + s.grade() + " | " + s.name()));
+          
+          
+          System.out.println("Q4 - Sort products by category then price within each category.");
+          record ProductQ124(String name, String category, double price) {}
+          List<ProductQ124> products = List.of(
+                  new ProductQ124("Mouse",    "Electronics", 29.99),
+                  new ProductQ124("T-Shirt",  "Clothing",    19.99),
+                  new ProductQ124("Keyboard", "Electronics", 49.99),
+                  new ProductQ124("Jacket",   "Clothing",    89.99),
+                  new ProductQ124("Monitor",  "Electronics", 199.99)
+              );
+          products.stream()
+          .sorted(Comparator.comparing(ProductQ124::category)
+                            .thenComparingDouble(ProductQ124::price))
+          .forEach(p -> System.out.printf("%-12s | %-12s | $%.2f%n",
+                  p.name(), p.category(), p.price()));
+          
+          
+          System.out.println("Q5 - Sort by length then alphabetically, then .reversed() the entire comparator.");
+          List<String> wordsQ125 = Arrays.asList("banana", "apple", "kiwi", "mango", "fig", "grape");
+          wordsQ125.stream()
+          .sorted(Comparator.comparingInt(String::length)
+        		  .thenComparing(Comparator.naturalOrder()).reversed())
+        		  .forEach(System.out::println);
+          
+          
+          
+          System.out.println("---------------------------------------------------------------"); 
+          System.out.println("13. skip(), limit(), takeWhile(), dropWhile()");
+          System.out.println("Q1 - Take only the first 4 elements from a list.");
+          
+          
+          
+          
+          
+
+          
 	}
 	
 	 @FunctionalInterface
